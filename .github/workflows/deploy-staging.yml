@@ -8,3 +8,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'stage')
+    steps:
+      - uses: actions/checkout@v1
+        
+      - name: Download built artifact
+        uses: actions/download-artifact@main
+        with:
+          name: webpack artifacts
+          path: public
+          
+      - name: Deploy to AWS
+        uses: github/deploy-nodejs@master
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
